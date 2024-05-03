@@ -8,10 +8,10 @@ const { InjectManifest } = require('workbox-webpack-plugin');
 
 module.exports = () => {
   return {
-    mode: 'development',
+    mode: 'production',
     entry: {
-      main: './src/js/index.js',
-      install: './src/js/install.js'
+      main: '/src/js/index.js',
+      install: '/src/js/install.js'
     },
     output: {
       filename: '[name].bundle.js',
@@ -20,33 +20,44 @@ module.exports = () => {
     plugins: [
       new HtmlWebpackPlugin({
         template: './index.html',
-        title: 'Webpack Plugin',
-      }),
-      new InjectManifest({
-        swSrc: './src-sw.js', // Path to your service worker source file
+        title: 'Just Another Text Editor'
       }),
       new WebpackPwaManifest({
-            name: 'PWA Text Generator',
-            short_name: 'PWA',
-            description: 'This is my awesome Progressive Web App!',
-            background_color: '#ffffff',
-            theme_color: '#2196f3',
-            start_url: '/',
-            icons: [
-              {
-                src: path.resolve('src/images/logo.png'),
-                sizes: [96], // multiple sizes
-                destination: path.join('images', 'logo')
-              }
-            ]
-          })
+        name: 'PWA Text Editor',
+        short_name: 'J.A.T.E.',
+        description: 'A very cool PWA notetaking app',
+        background_color: '#225ca3',
+        theme_color: '#225ca3',
+        id: '/',
+        start_url: '/',
+        publicPath: '/',
+        fingerprints: false,
+        icons: [
+          {
+            src: path.resolve('src/images/logo.png'),
+
+            sizes: [96, 128, 256, 384, 512],
+            destination: path.join('assets', 'icons'),
+          },
         ],
+      }),
+      new InjectManifest({
+        swSrc: './src-sw.js',
+        swDest: 'src-sw.js',
+      }),
+    ],
 
     module: {
       rules: [
         {
+          // Finds css files
           test: /\.css$/i,
           use: ['style-loader', 'css-loader'],
+        },
+        {
+          // Finds files ending .png, .svg, .jpg, .jpeg or .gif
+          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          type: 'asset/resource',
         },
         {
           test: /\.m?js$/,
@@ -54,12 +65,11 @@ module.exports = () => {
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel/preset-env']
-            }
-          }
+              presets: ['@babel/preset-env'],
+            },
+          },
         },
-        
-      ],
+      ]
     },
   };
 };
