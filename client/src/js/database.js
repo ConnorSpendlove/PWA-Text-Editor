@@ -1,43 +1,44 @@
+import { openDB } from 'idb';
+
 const initdb = async () =>
-  openDB('jateDB', 1, {
+  openDB('jate', 1, {
     upgrade(db) {
-      if (!db.objectStoreNames.contains('jateDB')) {
-        db.createObjectStore('jateDB', { keyPath: 'id', autoIncrement: true });
-        console.log('jateDB database created');
-      } else {
-        console.log('jateDB database already exists');
+      if (db.objectStoreNames.contains('jate')) {
+        console.log('jate database already exists');
+        return;
       }
+      db.createObjectStore('jate', { keyPath: 'id', autoIncrement: true });
+      console.log('jate database created');
     },
   });
 
+
 export const putDb = async (content) => {
-  console.log('PUT to the database');
   try {
-    const editorDb = await openDB('jateDB', 1);
-    const tx = editorDb.transaction('jateDB', 'readwrite');
-    const store = tx.objectStore('jateDB');
-    const request = store.put({ editor: content });
-    const result = await request;
-    console.log('🚀 - data saved to the database', result);
-  } catch (error) {
-    console.error('Error putting data to the database:', error);
-    throw error; // Rethrow the error to handle it outside of this function if needed
+    console.log('PUT to the db');
+    const jateDb = await openDB('jate', 1);
+    const rw = jateDb.transaction('jate', 'readwrite');
+    const store = rw.objectStore('jate');
+    const req = store.put({ content });
+    const res = await req;
+    console.log('New record', res);
+  } catch(err) {
+    console.error('Failed to get data from the jate database', err);
   }
+
 };
 
 export const getDb = async () => {
-  console.log('GET from the database');
   try {
-    const editorDb = await openDB('jateDB', 1);
-    const tx = editorDb.transaction('jateDB', 'readonly');
-    const store = tx.objectStore('jateDB');
-    const request = store.getAll();
-    const result = await request;
-    console.log('Retrieved data from the database:', result);
-    return result;
-  } catch (error) {
-    console.error('Error getting data from the database:', error);
-    throw error; // Rethrow the error to handle it outside of this function if needed
+  console.log('GET to the db');
+  const jateDb = await openDB('jate', 1);
+  const ro = jateDb.transaction('jate', 'readonly');
+  const store = ro.objectStore('jate');
+  const req = store.getAll();
+  const res = await req;
+  console.log('Data retrieved from db', res);
+  } catch (err) {
+  console.log('Failed to retrieve data from db');
   }
 };
 
