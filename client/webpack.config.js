@@ -28,7 +28,6 @@ module.exports = () => {
         description: 'A very cool PWA notetaking app',
         background_color: '#225ca3',
         theme_color: '#225ca3',
-        id: '/',
         start_url: '/',
         publicPath: '/',
         fingerprints: false,
