@@ -21,19 +21,22 @@ export const putDb = async (content) => {
     const store = rw.objectStore('jate');
     const req = store.put({ content });
     const res = await req;
-    console.log('New record', res);
+     // Log result 
+    console.log(res);
   } catch(err) {
     console.error('Failed to get data from the jate database', err);
   }
 
 };
 
+// Function to retrieve data from the IndexedDB database
 export const getDb = async () => {
   try {
   console.log('GET to the db');
   const jateDb = await openDB('jate', 1);
   const ro = jateDb.transaction('jate', 'readonly');
   const store = ro.objectStore('jate');
+   // Get all data from the object store
   const req = store.getAll();
   const res = await req;
   console.log('Data retrieved from db', res);
